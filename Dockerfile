@@ -38,9 +38,9 @@ RUN /usr/bin/native-image \
 # need socket library from Fn FDK
 FROM fnproject/fn-java-fdk:##FN_FDK_TAG## as fdk
 
-FROM frolvlad/alpine-glibc
+FROM gcr.io/distroless/base
 WORKDIR /function
 COPY --from=graalvm /function/func func
-COPY --from=fdk /function/runtime/lib/* .
+COPY --from=fdk /function/runtime/lib/* ./
 ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80", "-Djava.library.path=/function"]
 CMD [ "com.example.fn.HelloFunction::handleRequest" ]

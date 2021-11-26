@@ -64,9 +64,11 @@ generateImage() {
 
 # GraalVM Community Init Images
 generateImage 11 "container-registry.oracle.com/graalvm/native-image" "fnproject/fn-java-graalvm-ce-init"
-generateImage 17 "container-registry.oracle.com/graalvm/native-image" "fnproject/fn-java-graalvm-ce-init"
+# TODO: enable when 17 FDK images available
+# generateImage 17 "container-registry.oracle.com/graalvm/native-image" "fnproject/fn-java-graalvm-ce-init"
 
 # GraalVM Enterprise Init Images
 generateImage 8  "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
 generateImage 11 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
-generateImage 17 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
+# TODO: enable when 17 FDK images available
+# generateImage 17 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
