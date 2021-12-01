@@ -29,10 +29,17 @@ e.g.,
 ```sh
 fn init --init-image fnproject/fn-java-graalvm-ee-init:jdk11-1.0.141 myfunc
 ```
-This will generate a function named `myfunc` in folder of the same name.  To
-build the function you invoke `fn build` as you would for any Fn function.  The
+This will generate a function named `myfunc` in folder of the same name.
+To build the function you invoke `fn build` as you would for any Fn function.  The
 build instructions for the function are defined in a `Dockerfile` which can be
 customized as needed.
+
+### Function Names
+
+A Java class will be generated for the function with a legal Java name derived from
+the provided function name.  Snake case with underscores (e.g., my_func) and kebab case
+with dashes (e.g, my-func) are supported and will result in a camel case function
+class name (e.g., MyFunc).  
 
 ### Credits
 
