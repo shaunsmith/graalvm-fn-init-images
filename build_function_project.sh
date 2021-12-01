@@ -1,12 +1,12 @@
 #!/bin/sh
 
-touch errors.txt
+touch generation.log
 if [ -n ${FN_FUNCTION_NAME} ]
 then
     if [[ ${FN_FUNCTION_NAME:0:1} =~ ^[A-Za-z] ]]
     then
         JAVA_NAME=$(echo ${FN_FUNCTION_NAME} | sed -r 's/(^|[-_])([a-z0-9])/\U\2/g')
-        echo "LOG: JAVA_NAME is: ${JAVA_NAME}" >> errors.txt 
+        echo "LOG: JAVA_NAME is: ${JAVA_NAME}" >> generation.log 
         if [[ ${JAVA_NAME} =~ ^[A-Za-z0-9]*$ ]]
         then
             sed -i -e "s|<artifactId>hello</artifactId>|<artifactId>${FN_FUNCTION_NAME}</artifactId>|" pom.xml
@@ -17,10 +17,10 @@ then
             sed -i -e "s|HelloFunction|${JAVA_NAME}|" src/test/java/com/example/fn/HelloFunctionTest.java
             mv src/test/java/com/example/fn/HelloFunctionTest.java "src/test/java/com/example/fn/${JAVA_NAME}Test.java"
         else
-            echo "ERROR: Java function class name may not contain special characters: ${JAVA_NAME}" >> errors.txt
+            echo "ERROR: Java function class name may not contain special characters: ${JAVA_NAME}" >> generation.log
         fi
     else
-        echo "ERROR: Function name must start with a letter" >> errors.txt
+        echo "ERROR: Function name must start with a letter" >> generation.log
     fi
 fi
-tar c src pom.xml func.init.yaml Dockerfile errors.txt
+tar generation.log c src pom.xml func.init.yaml Dockerfile 
