@@ -5,7 +5,7 @@ if [ -n ${FN_FUNCTION_NAME} ]
 then
     if [[ ${FN_FUNCTION_NAME:0:1} =~ ^[A-Za-z] ]]
     then
-        JAVA_NAME=$(echo ${FN_FUNCTION_NAME} | sed -r 's/(^|_)([a-z0-9])/\U\2/g')
+        JAVA_NAME=$(echo ${FN_FUNCTION_NAME} | sed -r 's/(^|[-_])([a-z0-9])/\U\2/g')
         echo "LOG: JAVA_NAME is: ${JAVA_NAME}" >> errors.txt 
         if [[ ${JAVA_NAME} =~ ^[A-Za-z0-9]*$ ]]
         then
