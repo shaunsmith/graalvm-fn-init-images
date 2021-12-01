@@ -23,4 +23,4 @@ then
         echo "ERROR: Function name must start with a letter" >> generation.log
     fi
 fi
-tar generation.log c src pom.xml func.init.yaml Dockerfile 
+tar c generation.log src pom.xml func.init.yaml Dockerfile 
