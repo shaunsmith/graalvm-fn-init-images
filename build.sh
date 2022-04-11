@@ -25,6 +25,8 @@ if [ -z "${GRAALVM_VERSION}" ];  then
     GRAALVM_VERSION=$(cat graalvm.version)
 fi
 
+DOCKER_CLI=${DOCKER_CLI:-"docker"}
+
 generateImage() {
     local java_version="${1}"
     local graalvm_image_name=${2}
@@ -57,18 +59,18 @@ generateImage() {
         Dockerfile.build && rm Dockerfile.build.bak   
 
     # Build init image packaging created Dockerfile (Java 11)
-    docker build -t ${init_image_name}:jdk${java_version}-${FNFDK_VERSION} -f Dockerfile-init-image .
+    ${DOCKER_CLI} build -t ${init_image_name}:jdk${java_version}-fdk${FNFDK_VERSION}-gvm${GRAALVM_VERSION} -f Dockerfile-init-image .
     
     rm Dockerfile.build pom.build
 }
 
 # GraalVM Community Init Images
 generateImage 11 "container-registry.oracle.com/graalvm/native-image" "fnproject/fn-java-graalvm-ce-init"
-# TODO: enable when 17 FDK images available
-# generateImage 17 "container-registry.oracle.com/graalvm/native-image" "fnproject/fn-java-graalvm-ce-init"
+generateImage 17 "container-registry.oracle.com/graalvm/native-image" "fnproject/fn-java-graalvm-ce-init"
 
 # GraalVM Enterprise Init Images
-generateImage 8  "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
 generateImage 11 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
-# TODO: enable when 17 FDK images available
-# generateImage 17 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
+generateImage 17 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
+# 21.3.x (LTS) is last JDK 8 supported release
+GRAALVM_VERSION=21.3
+generateImage 8  "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-ee-init"
