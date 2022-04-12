@@ -38,7 +38,11 @@ RUN /usr/bin/native-image \
 # need socket library from Fn FDK
 FROM fnproject/fn-java-fdk:##FN_FDK_TAG## as fdk
 
-FROM gcr.io/distroless/base
+# FROM may be any Linux container image with glibc, e.g.,
+#  gcr.io/distroless/base
+#  frolvlad/alpine-glibc
+#  debian:buster-slim
+FROM oraclelinux:8-slim
 WORKDIR /function
 COPY --from=graalvm /function/func func
 COPY --from=fdk /function/runtime/lib/* ./

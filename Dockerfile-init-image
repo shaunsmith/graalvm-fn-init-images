@@ -14,10 +14,9 @@
 # limitations under the License.
 #
 
-FROM alpine:latest
-
+FROM oraclelinux:8-slim
+RUN microdnf install -y tar
 WORKDIR /build
-RUN apk add sed
 COPY src src
 COPY pom.build pom.xml
 COPY func.init.yaml .
