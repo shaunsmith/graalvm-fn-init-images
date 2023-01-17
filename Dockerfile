@@ -14,26 +14,30 @@
 # limitations under the License.
 #
 
-FROM fnproject/fn-java-fdk-build:##FN_FDK_BUILD_TAG## as build
+FROM ##GRAALVM_IMAGE## as graalvm
+
+## Installing Maven requires wget, unzip, and Maven itself
+RUN microdnf install --nodocs wget unzip \
+ && microdnf clean all \
+ && rm -rf /var/cache/yum
+WORKDIR /app
+ENV MAVEN_VERSION=##MAVEN_VERSION##
+RUN wget https://dlcdn.apache.org/maven/maven-${MAVEN_VERSION:0:1}/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip \
+ && unzip apache-maven-${MAVEN_VERSION}-bin.zip \
+ && rm apache-maven-${MAVEN_VERSION}-bin.zip
+ENV PATH=${PATH}:/app/apache-maven-${MAVEN_VERSION}/bin
+
+## Build and native compile function
 WORKDIR /function
 ENV MAVEN_OPTS=-Dmaven.repo.local=/usr/share/maven/ref/repository
 ADD pom.xml pom.xml
-RUN ["mvn", "package", "dependency:copy-dependencies", "-DincludeScope=runtime", "-DskipTests=true", "-Dmdep.prependGroupId=true", "-DoutputDirectory=target"]
+## Speed up subsequent builds by caching dependencies before copying in src
+RUN ["mvn", "package", "dependency:copy-dependencies",  "-DincludeScope=runtime", "-DskipTests=true", "-Dmdep.prependGroupId=true", "-DoutputDirectory=target"]
 ADD src src
-RUN ["mvn", "package"]
-
-FROM ##GRAALVM_IMAGE## as graalvm
-WORKDIR /function
-COPY --from=build /function/target/*.jar target/
-RUN /usr/bin/native-image \
-    -H:+StaticExecutableWithDynamicLibC \
-    --no-fallback \
-    --allow-incomplete-classpath \
-    --enable-url-protocols=https,http \
-    --report-unsupported-elements-at-runtime \
-    -H:Name=func \
-    -classpath "target/*"\
-    com.fnproject.fn.runtime.EntryPoint
+## Build and test bytecode
+RUN ["mvn", "test"]
+## Generate Native Executable
+RUN ["mvn", "-Pnative", "-DskipTests", "package"]
 
 # need socket library from Fn FDK
 FROM fnproject/fn-java-fdk:##FN_FDK_TAG## as fdk
@@ -44,7 +48,7 @@ FROM fnproject/fn-java-fdk:##FN_FDK_TAG## as fdk
 #  debian:buster-slim
 FROM oraclelinux:8-slim
 WORKDIR /function
-COPY --from=graalvm /function/func func
+COPY --from=graalvm /function/target/func func
 COPY --from=fdk /function/runtime/lib/* ./
 ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80", "-Djava.library.path=/function"]
-CMD [ "com.example.fn.HelloFunction::handleRequest" ]
+CMD [ "com.example.fn.Func1::handleRequest" ]

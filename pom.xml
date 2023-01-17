@@ -23,7 +23,8 @@
     <modelVersion>4.0.0</modelVersion>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <fdk.version>1.0.146</fdk.version>
+        <fdk.version>1.0.162</fdk.version>
+        <native.maven.plugin.version>0.9.19</native.maven.plugin.version>
     </properties>
     <groupId>com.example.fn</groupId>
     <artifactId>hello</artifactId>
@@ -90,4 +91,47 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <version>${native.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <executions>
+                        <execution>
+                            <id>build-native</id>
+                            <goals>
+                            <goal>compile-no-fork</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                        <execution>
+                            <id>test-native</id>
+                            <goals>
+                            <goal>test</goal>
+                            </goals>
+                            <phase>test</phase>
+                        </execution>
+                        </executions>
+                        <configuration>
+                            <mainClass>com.fnproject.fn.runtime.EntryPoint</mainClass>
+                            <buildArgs>
+                                <arg>-H:+StaticExecutableWithDynamicLibC</arg>
+                                <arg>--no-fallback</arg>
+                                <arg>--enable-url-protocols=https,http</arg>
+                                <arg>--report-unsupported-elements-at-runtime</arg>
+                                <arg>-H:Name=func</arg>
+                            </buildArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
