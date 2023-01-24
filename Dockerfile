@@ -14,26 +14,21 @@
 # limitations under the License.
 #
 
-FROM fnproject/fn-java-fdk-build:##FN_FDK_BUILD_TAG## as build
+FROM ##GRAALVM_IMAGE## as graalvm
+
+## Build and native compile function
 WORKDIR /function
 ENV MAVEN_OPTS=-Dmaven.repo.local=/usr/share/maven/ref/repository
+ADD mvnw mvnw
+ADD .mvn .mvn
 ADD pom.xml pom.xml
-RUN ["mvn", "package", "dependency:copy-dependencies", "-DincludeScope=runtime", "-DskipTests=true", "-Dmdep.prependGroupId=true", "-DoutputDirectory=target"]
+## Speed up subsequent builds by caching dependencies before copying in src
+RUN ["./mvnw", "package", "dependency:copy-dependencies",  "-DincludeScope=runtime", "-DskipTests=true", "-Dmdep.prependGroupId=true", "-DoutputDirectory=target"]
 ADD src src
-RUN ["mvn", "package"]
-
-FROM ##GRAALVM_IMAGE## as graalvm
-WORKDIR /function
-COPY --from=build /function/target/*.jar target/
-RUN /usr/bin/native-image \
-    -H:+StaticExecutableWithDynamicLibC \
-    --no-fallback \
-    --allow-incomplete-classpath \
-    --enable-url-protocols=https,http \
-    --report-unsupported-elements-at-runtime \
-    -H:Name=func \
-    -classpath "target/*"\
-    com.fnproject.fn.runtime.EntryPoint
+## Build and test bytecode
+RUN ["./mvnw", "test"]
+## Generate Native Executable
+RUN ["./mvnw", "-Pnative", "-DskipTests", "package"]
 
 # need socket library from Fn FDK
 FROM fnproject/fn-java-fdk:##FN_FDK_TAG## as fdk
@@ -44,7 +39,7 @@ FROM fnproject/fn-java-fdk:##FN_FDK_TAG## as fdk
 #  debian:buster-slim
 FROM oraclelinux:8-slim
 WORKDIR /function
-COPY --from=graalvm /function/func func
+COPY --from=graalvm /function/target/func func
 COPY --from=fdk /function/runtime/lib/* ./
 ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80", "-Djava.library.path=/function"]
-CMD [ "com.example.fn.HelloFunction::handleRequest" ]
+CMD [ "com.example.fn.Func1::handleRequest" ]

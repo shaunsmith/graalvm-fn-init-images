@@ -14,14 +14,12 @@
 # limitations under the License.
 #
 
-FROM oraclelinux:8-slim
-RUN microdnf update \
- && microdnf install --nodocs tar \
- && microdnf clean all \
- && rm -rf /var/cache/yum
+FROM busybox
 WORKDIR /build
 COPY src src
 COPY pom.build pom.xml
+COPY mvnw mvnw
+COPY .mvn .mvn
 COPY func.init.yaml .
 COPY Dockerfile.build Dockerfile
 COPY build_function_project.sh build_function_project.sh
