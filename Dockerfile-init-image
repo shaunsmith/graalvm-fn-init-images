@@ -18,6 +18,8 @@ FROM busybox
 WORKDIR /build
 COPY src src
 COPY pom.build pom.xml
+COPY mvnw mvnw
+COPY .mvn .mvn
 COPY func.init.yaml .
 COPY Dockerfile.build Dockerfile
 COPY build_function_project.sh build_function_project.sh

@@ -16,28 +16,19 @@
 
 FROM ##GRAALVM_IMAGE## as graalvm
 
-## Installing Maven requires wget, unzip, and Maven itself
-RUN microdnf install --nodocs wget unzip \
- && microdnf clean all \
- && rm -rf /var/cache/yum
-WORKDIR /app
-ENV MAVEN_VERSION=##MAVEN_VERSION##
-RUN wget https://dlcdn.apache.org/maven/maven-${MAVEN_VERSION:0:1}/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip \
- && unzip apache-maven-${MAVEN_VERSION}-bin.zip \
- && rm apache-maven-${MAVEN_VERSION}-bin.zip
-ENV PATH=${PATH}:/app/apache-maven-${MAVEN_VERSION}/bin
-
 ## Build and native compile function
 WORKDIR /function
 ENV MAVEN_OPTS=-Dmaven.repo.local=/usr/share/maven/ref/repository
+ADD mvnw mvnw
+ADD .mvn .mvn
 ADD pom.xml pom.xml
 ## Speed up subsequent builds by caching dependencies before copying in src
-RUN ["mvn", "package", "dependency:copy-dependencies",  "-DincludeScope=runtime", "-DskipTests=true", "-Dmdep.prependGroupId=true", "-DoutputDirectory=target"]
+RUN ["./mvnw", "package", "dependency:copy-dependencies",  "-DincludeScope=runtime", "-DskipTests=true", "-Dmdep.prependGroupId=true", "-DoutputDirectory=target"]
 ADD src src
 ## Build and test bytecode
-RUN ["mvn", "test"]
+RUN ["./mvnw", "test"]
 ## Generate Native Executable
-RUN ["mvn", "-Pnative", "-DskipTests", "package"]
+RUN ["./mvnw", "-Pnative", "-DskipTests", "package"]
 
 # need socket library from Fn FDK
 FROM fnproject/fn-java-fdk:##FN_FDK_TAG## as fdk
