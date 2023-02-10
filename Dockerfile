@@ -42,4 +42,4 @@ WORKDIR /function
 COPY --from=graalvm /function/target/func func
 COPY --from=fdk /function/runtime/lib/* ./
 ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80", "-Djava.library.path=/function"]
-CMD [ "com.example.fn.HelloFunction::handleRequest" ]
+CMD [ "com.example.fn.Func1::handleRequest" ]
