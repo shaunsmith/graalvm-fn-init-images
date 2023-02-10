@@ -26,7 +26,7 @@ fn init --init image <INIT IMAGE NAME>:jdk<JAVA VERSION>-<FDK VERSION> <FUNCTION
 ```
 e.g.,
 ```sh
-fn init --init-image fnproject/fn-java-graalvm-init:jdk17-1.0.165 myfunc
+fn init --init-image fnproject/fn-java-graalvm-init:jdk17-fdk1.0.165 myfunc
 ```
 This will generate a function named `myfunc` in folder of the same name.
 To build the function you invoke `fn build` as you would for any Fn function.  The
