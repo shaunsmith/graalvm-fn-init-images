@@ -22,7 +22,7 @@ works.  Both are about the same size.
 
 Once built, you can generate a starter function using the `fn` CLI.  The syntax is:
 ```sh
-fn init --init image <INIT IMAGE NAME>:jdk<JAVA VERSION>-<FDK VERSION> <FUNCTION NAME>
+fn init --init image <INIT IMAGE NAME>:jdk<JAVA VERSION>-fdk<FDK VERSION> <FUNCTION NAME>
 ```
 e.g.,
 ```sh
