@@ -17,7 +17,6 @@ image
 but [frolvlad/alpine-glibc](https://hub.docker.com/r/frolvlad/alpine-glibc) also
 works.  Both are about the same size.
 
-NOTE: Java 17 init-image upport is ready but commented out until Fn FDK images for 17 are available.
 
 ## Using init-images
 
@@ -27,7 +26,7 @@ fn init --init image <INIT IMAGE NAME>:jdk<JAVA VERSION>-<FDK VERSION> <FUNCTION
 ```
 e.g.,
 ```sh
-fn init --init-image fnproject/fn-java-graalvm-ee-init:jdk11-1.0.141 myfunc
+fn init --init-image fnproject/fn-java-graalvm-init:jdk17-1.0.165 myfunc
 ```
 This will generate a function named `myfunc` in folder of the same name.
 To build the function you invoke `fn build` as you would for any Fn function.  The
