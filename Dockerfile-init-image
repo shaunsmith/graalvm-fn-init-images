@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM busybox
+FROM oraclelinux:8-slim
 WORKDIR /build
 COPY src src
 COPY pom.build pom.xml
