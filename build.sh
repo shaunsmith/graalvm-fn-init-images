@@ -52,7 +52,7 @@ generateImage() {
     sed -i.bak -e "s|<fdk\\.version>.*</fdk\\.version>|<fdk.version>${FNFDK_VERSION}</fdk.version>|" pom.xml && rm pom.xml.bak
 
     # Update pom.xml with current GraalVM Build Tools version
-    sed -i.bak -e "s|<native\\.maven\\.plugin\\.version>.*<native\\.maven\\.plugin\\.version>|<native.maven.plugin.version>${GRAALVM_BUILD_TOOLS_VERSION}</native.maven.plugin.version>|" pom.xml && rm pom.xml.bak
+    sed -i.bak -e "s|<native\\.maven\\.plugin\\.version>.*</native\\.maven\\.plugin\\.version>|<native.maven.plugin.version>${GRAALVM_BUILD_TOOLS_VERSION}</native.maven.plugin.version>|" pom.xml && rm pom.xml.bak
 
     # Update pom.xml with Java source/target
     cp pom.xml pom.build
