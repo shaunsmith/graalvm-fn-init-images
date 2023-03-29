@@ -23,8 +23,8 @@
     <modelVersion>4.0.0</modelVersion>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <fdk.version>1.0.165</fdk.version>
-        <native.maven.plugin.version>0.9.19</native.maven.plugin.version>
+        <fdk.version>0.0.0</fdk.version>
+        <native.maven.plugin.version>0.0.0</native.maven.plugin.version>
     </properties>
     <groupId>com.example.fn</groupId>
     <artifactId>hello</artifactId>
@@ -127,6 +127,9 @@
                                 <arg>--report-unsupported-elements-at-runtime</arg>
                                 <arg>-H:Name=func</arg>
                             </buildArgs>
+                            <metadataRepository>
+                                <enabled>true</enabled>
+                            </metadataRepository>
                         </configuration>
                     </plugin>
                 </plugins>

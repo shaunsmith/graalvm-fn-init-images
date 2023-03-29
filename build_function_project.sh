@@ -1,6 +1,7 @@
 #!/bin/sh
 
 touch generation.log
+echo "LOG: Function name provided is: ${FN_FUNCTION_NAME}" >> generation.log 
 if [ -n ${FN_FUNCTION_NAME} ]
 then
     if [[ ${FN_FUNCTION_NAME:0:1} =~ ^[A-Za-z] ]]
