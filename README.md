@@ -9,7 +9,7 @@ GraalVM versions in the following environment variables before running
 * GRAALVM_VERSION
 
 The generated function projects use [mostly static
-linking](https://www.graalvm.org/reference-manual/native-image/StaticImages/)
+linking](https://www.graalvm.org/latest/reference-manual/native-image/guides/build-static-executables/)
 which allows compiled function executables to be deployed on any container image
 with glibc available.  The default deployment image is the Google distroless
 image
@@ -26,7 +26,7 @@ fn init --init image <INIT IMAGE NAME>:jdk<JAVA VERSION>-fdk<FDK VERSION> <FUNCT
 ```
 e.g.,
 ```sh
-fn init --init-image fnproject/fn-java-graalvm-init:jdk17-fdk1.0.165 myfunc
+fn init --init-image fnproject/fn-java-graalvm-init:jdk17-fdk1.0.175 myfunc
 ```
 This will generate a function named `myfunc` in folder of the same name.
 To build the function you invoke `fn build` as you would for any Fn function.  The
