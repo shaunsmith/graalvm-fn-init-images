@@ -15,14 +15,10 @@
 # limitations under the License.
 #
 
-set -e
+set -ex
 
 if [ -z "${FNFDK_VERSION}" ];  then
     FNFDK_VERSION=$(cat fnfdk.version)
-fi
-
-if [ -z "${GRAALVM_VERSION}" ];  then
-    GRAALVM_VERSION=$(cat graalvm.version)
 fi
 
 if [ -z "${GRAALVM_BUILD_TOOLS_VERSION}" ];  then
@@ -33,13 +29,14 @@ if [ -z "${MAVEN_VERSION}" ];  then
     MAVEN_VERSION=$(cat maven.version)
 fi
 
+# If using containerd: export DOCKER_CLI=nerdctl
 DOCKER_CLI=${DOCKER_CLI:-"docker"}
 
 generateImage() {
     local java_version="${1}"
     local graalvm_image_name=${2}
     local init_image_name=${3}
-    local graalvm_image_and_tag="${graalvm_image_name}:ol8-java${java_version}" # latest Java CPU on OL8
+    local graalvm_image_and_tag="${graalvm_image_name}:${java_version}" # latest Java CPU
     local fn_fdk_build_tag="${FNFDK_VERSION}"
     local fn_fdk_tag="${FNFDK_VERSION}"
     if [ ${java_version} -gt 8 ] 
@@ -71,7 +68,7 @@ generateImage() {
         Dockerfile.build && rm Dockerfile.build.bak   
 
     # Build init image packaging created Dockerfile 
-    local full_image_name_with_tag="${init_image_name}:jdk${java_version}-fdk${FNFDK_VERSION}-gvm${GRAALVM_VERSION}"
+    local full_image_name_with_tag="${init_image_name}:jdk${java_version}-fdk${FNFDK_VERSION}"
     ${DOCKER_CLI} build -t ${full_image_name_with_tag} -f Dockerfile-init-image .
     ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}-fdk${FNFDK_VERSION}
     ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}
@@ -79,4 +76,5 @@ generateImage() {
 }
 
 # Oracle GraalVM Init Images
-generateImage 17 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-init"
+#generateImage 17 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-init"
+generateImage 17 "ghcr.io/graalvm/native-image-community" "fnproject/fn-java-graalvm-community-init"
