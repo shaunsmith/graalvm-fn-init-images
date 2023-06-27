@@ -25,10 +25,6 @@ if [ -z "${GRAALVM_BUILD_TOOLS_VERSION}" ];  then
     GRAALVM_BUILD_TOOLS_VERSION=$(cat graalvm-build-tools.version)
 fi
 
-if [ -z "${MAVEN_VERSION}" ];  then
-    MAVEN_VERSION=$(cat maven.version)
-fi
-
 # If using containerd: export DOCKER_CLI=nerdctl
 DOCKER_CLI=${DOCKER_CLI:-"docker"}
 
@@ -64,7 +60,6 @@ generateImage() {
         -e "s|##FN_FDK_TAG##|${fn_fdk_tag}|" \
         -e "s|##FN_FDK_BUILD_TAG##|${fn_fdk_build_tag}|" \
         -e "s|##GRAALVM_IMAGE##|${graalvm_image_and_tag}|" \
-        -e "s|##MAVEN_VERSION##|${MAVEN_VERSION}|" \
         Dockerfile.build && rm Dockerfile.build.bak   
 
     # Build init image packaging created Dockerfile 
