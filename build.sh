@@ -65,9 +65,10 @@ generateImage() {
         Dockerfile.build && rm Dockerfile.build.bak   
 
     # Build init image packaging created Dockerfile 
-    local full_image_name_with_tag="${init_image_name}:jdk${java_version}-fdk${FNFDK_VERSION}"
+    local full_image_name_with_tag="${init_image_name}:jdk${java_version}-ol${ol_version}-fdk${FNFDK_VERSION}"
     ${DOCKER_CLI} build -t ${full_image_name_with_tag} -f Dockerfile-init-image .
     ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}-fdk${FNFDK_VERSION}
+    ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}-ol${ol_version}
     ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}
     rm Dockerfile.build pom.build
 }
