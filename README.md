@@ -1,32 +1,33 @@
 # GraalVM Native Image-based function init-images
 
-You can create a set of function init-images (boilerplate generators) by either
-running the `build.sh` script with no arguments (Fn and GraalVM versions will be
-read from `fnfdk.version` and `graalvm.version`) or by defining the Fn FDK and
-GraalVM versions in the following environment variables before running
-`build.sh`:
-* FNFDK_VERSION
-* GRAALVM_VERSION
+You can create a set of function init-images (boilerplate generators) for
+supported GraalVM releases by either running the `build.sh` script with no
+arguments (Fn will be read from `fnfdk.version`) or by defining the Fn FDK in
+the `FNFDK_VERSION` environment variable before running.
 
 The generated function projects use [mostly static
 linking](https://www.graalvm.org/latest/reference-manual/native-image/guides/build-static-executables/)
 which allows compiled function executables to be deployed on any container image
-with glibc available.  The default deployment image is the Google distroless
-image
-[gcr.io/distroless/base](https://github.com/GoogleContainerTools/distroless/blob/main/base/README.md),
-but [frolvlad/alpine-glibc](https://hub.docker.com/r/frolvlad/alpine-glibc) also
-works.  Both are about the same size.
+with glibc available. Users of the init-image can easily edit the generated
+Dockerfile to specify the deployment image. The default deployment base image is
+slim Oracle Linux but Distoless Base
+([gcr.io/distroless/base](https://github.com/GoogleContainerTools/distroless/blob/main/base/README.md)),
+and Alpine with glibc
+([frolvlad/alpine-glibc](https://hub.docker.com/r/frolvlad/alpine-glibc)) also
+work.
 
+The fully qualified tag of each generated init-images is of the format: `<INIT IMAGE NAME>:jdk<JAVA VERSION>-ol<ORACLE LINUX VERSION>-fdk<FDK VERSION>`.
+For example a tag could be `jdk17-ol8-fdk1.0.175`. The same image will be tagged with just the JDK number for ease of use, e.g., `jdk17`.
 
 ## Using init-images
 
 Once built, you can generate a starter function using the `fn` CLI.  The syntax is:
 ```sh
-fn init --init image <INIT IMAGE NAME>:jdk<JAVA VERSION>-fdk<FDK VERSION> <FUNCTION NAME>
+fn init --init-image <INIT IMAGE NAME>:jdk<JAVA VERSION> <FUNCTION NAME>
 ```
 e.g.,
 ```sh
-fn init --init-image fnproject/fn-java-graalvm-init:jdk17-fdk1.0.175 myfunc
+fn init --init-image fnproject/fn-java-graalvm-init:jdk17 myfunc
 ```
 This will generate a function named `myfunc` in folder of the same name.
 To build the function you invoke `fn build` as you would for any Fn function.  The
