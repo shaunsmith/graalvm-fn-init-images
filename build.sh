@@ -30,9 +30,10 @@ DOCKER_CLI=${DOCKER_CLI:-"docker"}
 
 generateImage() {
     local java_version="${1}"
-    local graalvm_image_name=${2}
-    local init_image_name=${3}
-    local graalvm_image_and_tag="${graalvm_image_name}:${java_version}" # latest Java CPU
+    local ol_version="${2}"
+    local graalvm_image_name=${3}
+    local init_image_name=${4}
+    local graalvm_image_and_tag="${graalvm_image_name}:${java_version}-ol${ol_version}" # latest Java CPU
     local fn_fdk_build_tag="${FNFDK_VERSION}"
     local fn_fdk_tag="${FNFDK_VERSION}"
     if [ ${java_version} -gt 8 ] 
@@ -60,6 +61,7 @@ generateImage() {
         -e "s|##FN_FDK_TAG##|${fn_fdk_tag}|" \
         -e "s|##FN_FDK_BUILD_TAG##|${fn_fdk_build_tag}|" \
         -e "s|##GRAALVM_IMAGE##|${graalvm_image_and_tag}|" \
+        -e "s|##OL_VERSION##|${ol_version}|" \
         Dockerfile.build && rm Dockerfile.build.bak   
 
     # Build init image packaging created Dockerfile 
@@ -71,5 +73,5 @@ generateImage() {
 }
 
 # Oracle GraalVM Init Images
-#generateImage 17 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-init"
-generateImage 17 "ghcr.io/graalvm/native-image-community" "fnproject/fn-java-graalvm-community-init"
+#generateImage 17 8 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-init"
+generateImage 17 8 "ghcr.io/graalvm/graalvm-community" "fnproject/fn-java-graalvm-community-init"

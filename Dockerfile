@@ -37,7 +37,7 @@ FROM fnproject/fn-java-fdk:##FN_FDK_TAG## as fdk
 #  gcr.io/distroless/base
 #  frolvlad/alpine-glibc
 #  debian:buster-slim
-FROM oraclelinux:8-slim
+FROM oraclelinux:##OL_VERSION##-slim
 WORKDIR /function
 COPY --from=graalvm /function/target/func func
 COPY --from=fdk /function/runtime/lib/* ./
