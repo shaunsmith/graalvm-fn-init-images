@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-set -ex
+set -e
 
 if [ -z "${FNFDK_VERSION}" ];  then
     FNFDK_VERSION=$(cat fnfdk.version)
