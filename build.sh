@@ -75,4 +75,4 @@ generateImage() {
 
 # Oracle GraalVM Init Images
 #generateImage 17 8 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-init"
-generateImage 17 8 "ghcr.io/graalvm/graalvm-community" "fnproject/fn-java-graalvm-community-init"
+generateImage 17 8 "ghcr.io/graalvm/native-image-community" "fnproject/fn-java-graalvm-community-init"
