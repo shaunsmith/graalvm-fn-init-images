@@ -65,7 +65,7 @@ generateImage() {
         Dockerfile.build && rm Dockerfile.build.bak   
 
 
-    #remove the buildx_instance if already exist already created
+    #remove the builderInstance if already exist already created
     ${DOCKER_CLI} buildx rm builderInstance || true
     #create a builder instance and use it
     ${DOCKER_CLI} buildx create --use --name builderInstance
@@ -88,4 +88,4 @@ generateImage() {
 
 # Oracle GraalVM Init Images
 #generateImage 17 8 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-init"
-generateImage 17 8 "ghcr.io/graalvm/native-image-community" "manjeet007/fn-java-graalvm-community-init"
+generateImage 17 8 "ghcr.io/graalvm/native-image-community" "fnproject/fn-java-graalvm-community-init"
