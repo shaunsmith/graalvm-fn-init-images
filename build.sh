@@ -64,15 +64,28 @@ generateImage() {
         -e "s|##OL_VERSION##|${ol_version}|" \
         Dockerfile.build && rm Dockerfile.build.bak   
 
-    # Build init image packaging created Dockerfile 
+
+    #remove the buildx_instance if already exist already created
+    ${DOCKER_CLI} buildx rm builderInstance || true
+    #create a builder instance and use it
+    ${DOCKER_CLI} buildx create --use --name builderInstance
+
+    #build multiarch image packaging creataed Dockerfile
     local full_image_name_with_tag="${init_image_name}:jdk${java_version}-ol${ol_version}-fdk${FNFDK_VERSION}"
-    ${DOCKER_CLI} build -t ${full_image_name_with_tag} -f Dockerfile-init-image .
-    ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}-fdk${FNFDK_VERSION}
-    ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}-ol${ol_version}
-    ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}
+    ${DOCKER_CLI} buildx build --no-cache --provenance=false --push\
+    --platform linux/arm64/v8,linux/amd64\
+     -f Dockerfile-init-image -t ${full_image_name_with_tag}  --output "type=registry,oci-mediatypes=false" .
     rm Dockerfile.build pom.build
+
+#    # Build init image packaging created Dockerfile
+#    local full_image_name_with_tag="${init_image_name}:jdk${java_version}-ol${ol_version}-fdk${FNFDK_VERSION}"
+#    ${DOCKER_CLI} build -t ${full_image_name_with_tag} -f Dockerfile-init-image .
+#    ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}-fdk${FNFDK_VERSION}
+#    ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}-ol${ol_version}
+#    ${DOCKER_CLI} tag ${full_image_name_with_tag} ${init_image_name}:jdk${java_version}
+#    rm Dockerfile.build pom.build
 }
 
 # Oracle GraalVM Init Images
 #generateImage 17 8 "container-registry.oracle.com/graalvm/native-image-ee" "fnproject/fn-java-graalvm-init"
-generateImage 17 8 "ghcr.io/graalvm/native-image-community" "fnproject/fn-java-graalvm-community-init"
+generateImage 17 8 "ghcr.io/graalvm/native-image-community" "manjeet007/fn-java-graalvm-community-init"
