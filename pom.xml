@@ -120,12 +120,13 @@
                         </executions>
                         <configuration>
                             <mainClass>com.fnproject.fn.runtime.EntryPoint</mainClass>
+                            <imageName>func</imageName>
+                            <fallback>false</fallback>
+                            <verbose>true</verbose>
                             <buildArgs>
                                 <arg>-H:+StaticExecutableWithDynamicLibC</arg>
-                                <arg>--no-fallback</arg>
                                 <arg>--enable-url-protocols=https,http</arg>
                                 <arg>--report-unsupported-elements-at-runtime</arg>
-                                <arg>-H:Name=func</arg>
                             </buildArgs>
                             <metadataRepository>
                                 <enabled>true</enabled>
