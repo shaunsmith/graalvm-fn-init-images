@@ -5,6 +5,11 @@ supported GraalVM releases by either running the `build.sh` script with no
 arguments (Fn will be read from `fnfdk.version`) or by defining the Fn FDK in
 the `FNFDK_VERSION` environment variable before running.
 
+E.g.,
+```sh
+FNFDK_VERSION=1.0.198 GRAALVM_BUILD_TOOLS_VERSION=0.10.2 ./build.sh
+```
+
 The generated function projects use [mostly static
 linking](https://www.graalvm.org/latest/reference-manual/native-image/guides/build-static-executables/)
 which allows compiled function executables to be deployed on any container image
